@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Way2Automation-TESTING">
+<parameter name="appURL" value="http://www.way2automation.com/demo.html"/>
+<parameter name="browserType" value="chrome"/>
+  <test name="way2Automation">
+    <classes>
+      <class name="com.pack.common.test.InteractionDemo"/>
+    </classes>
+  </test>
+</suite>
