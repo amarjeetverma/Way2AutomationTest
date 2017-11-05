@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Way2Automation-TESTING]">
+  <parameter name="appURL" value="http://way2automation.com/way2auto_jquery/index.php"/>
+  <parameter name="browserType" value="chrome"/>
+  <test name="way2Automation(failed)">
+    <classes>
+      <class name="com.pack.common.test.InteractionDemo">
+        <methods>
+          <include name="setUp"/>
+          <include name="TestBaseSetupStart"/>
+          <include name="clckSortable"/>
+        </methods>
+      </class> <!-- com.pack.common.test.InteractionDemo -->
+    </classes>
+  </test> <!-- way2Automation(failed) -->
+</suite> <!-- Failed suite [Way2Automation-TESTING] -->

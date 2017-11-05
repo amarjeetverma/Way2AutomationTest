@@ -1,5 +1,7 @@
 package com.pack.common.test;
 
+import java.awt.AWTException;
+
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -18,25 +20,22 @@ public class InteractionDemo extends TestBaseSetup{
 	public void setUp(){
 		driver= getDriver();
 	}
-	@Test
-	public void clckDraggable() throws InterruptedException{
+//	@Test
+	public void clckDraggable() throws InterruptedException, AWTException{
 		System.out.println("Starting the draggable functaionality testing...");
 		basepage = new BasePage(driver);
-//		basepage.clickdraggable();
 		basepage.testDragFunction();
 	}
 //	@Test
-	public void clckSelectable(){
+	public void clckSelectable() throws InterruptedException, AWTException{
 		System.out.println("Starting the selectable functionality testing...");
-		driver.navigate().back();
 		basepage =new BasePage(driver);
 		basepage.testSelectFunctionality();
 		
 	}
 	@Test
-	public void clckSortable(){
+	public void clckSortable() throws InterruptedException, AWTException{
 		System.out.println("Starting the sortable functionality testing...");
-		driver.navigate().back();
 		basepage = new BasePage(driver);
 		basepage.testSortableFunctionality();
 	}

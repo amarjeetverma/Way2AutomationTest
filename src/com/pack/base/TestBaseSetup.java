@@ -1,5 +1,6 @@
 package com.pack.base;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -56,6 +57,8 @@ public class TestBaseSetup {
 	@BeforeClass
 	public void TestBaseSetupStart(String browserType,String appURL){
 		try{
+			String log4jConfigPath = "D:\\AMCAT\\Git_Repo\\Way2AutomationTest\\src\\com\\pack\\log4j.properties";
+			PropertyConfigurator.configure(log4jConfigPath);
 			setDriver(browserType,appURL);
 		}
 		catch(Exception e){

@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Way2Automation-TESTING">
-<parameter name="appURL" value="http://www.way2automation.com/demo.html"/>
+<parameter name="appURL" value="http://way2automation.com/way2auto_jquery/index.php"/>
 <parameter name="browserType" value="chrome"/>
   <test name="way2Automation">
     <classes>

@@ -1,23 +1,33 @@
 package com.pack.common.packageObjects;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 public class BasePage {
 
 	protected WebDriver driver;
 	private By dragableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[1]/a");
-	private By droppableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[2]/a");
+	private By droppableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[2]/a"); 
 	private By resizableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[3]/a");
 	private By selectableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[4]/a");
 	private By sortableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[5]/a");
@@ -47,8 +57,10 @@ public class BasePage {
 		this.driver = driver;
 	}
 	
-	public void loginToPage(String username,String pass){
+	public void loginToPage(String username,String pass) throws InterruptedException{
 		System.out.println("logging in popup..");
+		WebElement signIn = driver.findElement(signInLnk);
+		signIn.click();
 		WebElement usenametxtbox = driver.findElement(usrnm);
 		WebElement passtxtbox = driver.findElement(passwd);
 		WebElement submtLogin = driver.findElement(submtbtn);
@@ -57,30 +69,20 @@ public class BasePage {
 		submtLogin.click();
 	}
 	
-	public indexPage clickdraggable(){
-		WebElement draggable = driver.findElement(dragableLnk);
-//		get new window
-		String oldTab = driver.getWindowHandle();
-		draggable.click();
-		ArrayList<String> newTab =new ArrayList<String>(driver.getWindowHandles());
-		newTab.remove(oldTab);
-//		change focus to new tab
-		driver.switchTo().window(newTab.get(0));
-		WebElement signIn = driver.findElement(signInLnk);
-		signIn.click();
-		// Switch back
-//	    driver.switchTo().window(windows.iterator().next());
-//		Alert alert=driver.switchTo().alert();	
-		loginToPage("test","test");
-		driver.navigate().refresh();
-		WebElement droppable = driver.findElement(droppableLnk);
-		droppable.click();
-		return new indexPage(driver);
-	}
+	/*  AWTException added due to Robot class
+	 * 
+	 */
 	
-	public indexPage testDragFunction() throws InterruptedException{
-		
-		clickdraggable();
+	public indexPage testDragFunction() throws InterruptedException, AWTException{
+		loginToPage("test","test");
+		Robot robo = new Robot();
+		robo.keyPress(KeyEvent.VK_CONTROL);
+		robo.keyPress(KeyEvent.VK_T);
+		robo.keyRelease(KeyEvent.VK_T);
+		robo.keyRelease(KeyEvent.VK_CONTROL);
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		driver.switchTo().window(tabs.get(1));
+		driver.navigate().to("http://way2automation.com/way2auto_jquery/droppable.php");
 //		switching to iframe
 		WebElement iframe1 = driver.findElement(frame1); 
 		driver.switchTo().frame(iframe1);
@@ -100,22 +102,29 @@ public class BasePage {
 		return new indexPage(driver);
 	}
 	
-	public indexPage testSelectFunctionality(){
+	public indexPage testSelectFunctionality() throws InterruptedException, AWTException{
 		
-//		WebElement draggable = driver.findElement(dragableLnk);
-////		get new window
-//		String oldTab = driver.getWindowHandle();
-//		draggable.click();
-//		ArrayList<String> newTab =new ArrayList<String>(driver.getWindowHandles());
-//		newTab.remove(oldTab);
-////		change focus to new tab
-//		driver.switchTo().window(newTab.get(0));
-//		WebElement signIn = driver.findElement(signInLnk);
-//		signIn.click();
-//		loginToPage("test","test");
-//		driver.navigate().refresh();
-		WebElement selectable = driver.findElement(selectableLnk);
-		selectable.click();
+		loginToPage("test","test");
+		driver.navigate().refresh();
+		Robot robo = new Robot();
+		robo.keyPress(KeyEvent.VK_CONTROL);
+		robo.keyPress(KeyEvent.VK_T);
+		robo.keyRelease(KeyEvent.VK_CONTROL);
+		robo.keyRelease(KeyEvent.VK_T);
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		driver.switchTo().window(tabs.get(0));
+		driver.get("http://way2automation.com/way2auto_jquery/selectable.php");
+//		WebElement selectable = driver.findElement(selectableLnk);
+//		Actions actions = new Actions(driver);
+//		actions.moveToElement(selectable).click().perform();
+//		selectable.click();
+//		if(selectable.isDisplayed())
+//		actions.moveToElement(selectable).click().perform();
+//		else{
+//		By selectableLnk2= By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[4]/a");
+//		WebElement selectable2 = driver.findElement(selectableLnk2);
+//		selectable2.click();
+//		}
 		
 		WebElement iframe1 = driver.findElement(frame1);
 		driver.switchTo().frame(iframe1);
@@ -148,14 +157,23 @@ public class BasePage {
 		Assert.assertEquals(item2Coloraftr, "rgba(255, 255, 255, 1)");
 		Assert.assertEquals(item4Coloraftr, "rgba(255, 255, 255, 1)");
 		Assert.assertEquals(item5Coloraftr, "rgba(255, 255, 255, 1)");
-		
 		return new indexPage(driver);
 	}
 	
-	public indexPage testSortableFunctionality(){
+	public indexPage testSortableFunctionality() throws InterruptedException, AWTException{
 		
-		WebElement selectable = driver.findElement(sortableLnk);
-		selectable.click();
+		loginToPage("test","test");
+		driver.navigate().refresh();
+		Robot robo = new Robot();
+		robo.keyPress(KeyEvent.VK_CONTROL);
+		robo.keyPress(KeyEvent.VK_T);
+		robo.keyRelease(KeyEvent.VK_CONTROL);
+		robo.keyRelease(KeyEvent.VK_T);
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		driver.switchTo().window(tabs.get(0));
+		driver.get("http://way2automation.com/way2auto_jquery/sortable.php");
+//		WebElement selectable = driver.findElement(sortableLnk);
+//		selectable.click();
 		WebElement iframe1 = driver.findElement(frame1);
 		driver.switchTo().frame(iframe1);
 		WebElement source = driver.findElement(By.xpath("//*[@id='sortable']/li[1]"));
@@ -172,6 +190,44 @@ public class BasePage {
 		dragDrop.perform();
 		Assert.assertEquals(itemTxtBeforeAction1,"Item 5");
 		Assert.assertEquals(itemTxtBeforeAction2,"Item 1");
+		return new indexPage(driver);
+	}
+	
+	public indexPage SomeRandomCodeSnippetsForPracticeButItIsCommentedNotSureItWillWorkOrNot() throws InterruptedException, AWTException{
+		/*
+		WebElement draggable = driver.findElement(dragableLnk);
+//		get new window
+		String oldTab = driver.getWindowHandle();
+		draggable.click();
+		ArrayList<String> newTab =new ArrayList<String>(driver.getWindowHandles());
+		newTab.remove(oldTab);
+//		change focus to new tab
+		driver.switchTo().window(newTab.get(0));
+		WebElement signIn = driver.findElement(signInLnk);
+		signIn.click();
+//		 Switch back
+	    driver.switchTo().window(windows.iterator().next());
+		Alert alert=driver.switchTo().alert();
+		*/	
+//			WebElement droppable = driver.findElement(droppableLnk);
+		/*
+		***Trying to resolve staleElementRefrenceException ****
+			waitUntil(ExpectedConditions.presenceOfElementLocated(droppableLnk));
+			Wait.until(ExpectedConditions.stalenessOf(droppable));
+			driver.waitUntil(ExpectedConditions.visibilityOf(droppable));
+			driver.manage().timeouts().
+			
+			Wait wait = new FluentWait(driver)
+				    .withTimeout(30, TimeUnit.SECONDS)
+				    .pollingEvery(5, TimeUnit.SECONDS)
+				    .ignoring(NoSuchElementException.class);
+				  WebElement foo = wait.until(isDisplayed());
+			WebDriverWait wait = new WebDriverWait(driver,10000);
+			WebElement droppable=wait.until(ExpectedConditions.visibilityOfElementLocated(droppableLnk));
+		***did not get success to resolve staleElementRefrenceException ****
+		*/
+//			droppable.click();
+		
 		return new indexPage(driver);
 	}
 	
