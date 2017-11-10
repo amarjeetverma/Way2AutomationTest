@@ -2,9 +2,12 @@
 <suite name="Way2Automation-TESTING">
 <parameter name="appURL" value="http://way2automation.com/way2auto_jquery/index.php"/>
 <parameter name="browserType" value="chrome"/>
+<parameter name="testData" value="TestData.xlsx" />
+<parameter name="sheetName" value="Way2AutomationFunctions" />
+<parameter name="SKIPTEST" value="False" />
   <test name="way2Automation">
     <classes>
-      <class name="com.pack.common.test.InteractionDemo"/>
+      <class name="com.pack.common.test.TestSuite"/>
     </classes>
   </test>
 </suite>

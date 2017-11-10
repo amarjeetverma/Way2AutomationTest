@@ -38,5 +38,11 @@
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry exported="true" kind="con" path="org.testng.TESTNG_CONTAINER"/>
 	<classpathentry kind="lib" path="D:/Setups/Cucumber + Selenium/Log4j/apache-log4j-1.2.17/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="D:/Setups/Cucumber + Selenium/poi-3.17/poi-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Setups/Cucumber + Selenium/poi-3.17/poi-examples-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Setups/Cucumber + Selenium/poi-3.17/poi-excelant-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Setups/Cucumber + Selenium/poi-3.17/poi-ooxml-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Setups/Cucumber + Selenium/poi-3.17/poi-ooxml-schemas-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Setups/Cucumber + Selenium/poi-3.17/poi-scratchpad-3.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
