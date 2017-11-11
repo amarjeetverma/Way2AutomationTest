@@ -1,23 +1,34 @@
 package com.pack.common.packageObjects;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 
 public class BasePage {
 
 	protected WebDriver driver;
 	private By dragableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[1]/a");
-	private By droppableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[2]/a");
+	private By droppableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[2]/a"); 
 	private By resizableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[3]/a");
 	private By selectableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[4]/a");
 	private By sortableLnk = By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[5]/a");
@@ -47,40 +58,33 @@ public class BasePage {
 		this.driver = driver;
 	}
 	
-	public void loginToPage(String username,String pass){
+	public void loginToPage(String username,String pass) throws InterruptedException, AWTException{
 		System.out.println("logging in popup..");
+		WebElement signIn = driver.findElement(signInLnk);
+		signIn.click();
 		WebElement usenametxtbox = driver.findElement(usrnm);
 		WebElement passtxtbox = driver.findElement(passwd);
 		WebElement submtLogin = driver.findElement(submtbtn);
 		usenametxtbox.sendKeys("test");
 		passtxtbox.sendKeys("test");
 		submtLogin.click();
-	}
-	
-	public indexPage clickdraggable(){
-		WebElement draggable = driver.findElement(dragableLnk);
-//		get new window
-		String oldTab = driver.getWindowHandle();
-		draggable.click();
-		ArrayList<String> newTab =new ArrayList<String>(driver.getWindowHandles());
-		newTab.remove(oldTab);
-//		change focus to new tab
-		driver.switchTo().window(newTab.get(0));
-		WebElement signIn = driver.findElement(signInLnk);
-		signIn.click();
-		// Switch back
-//	    driver.switchTo().window(windows.iterator().next());
-//		Alert alert=driver.switchTo().alert();	
-		loginToPage("test","test");
 		driver.navigate().refresh();
-		WebElement droppable = driver.findElement(droppableLnk);
-		droppable.click();
-		return new indexPage(driver);
+		Robot robo = new Robot();
+		robo.keyPress(KeyEvent.VK_CONTROL);
+		robo.keyPress(KeyEvent.VK_T);
+		robo.keyRelease(KeyEvent.VK_CONTROL);
+		robo.keyRelease(KeyEvent.VK_T);
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		driver.switchTo().window(tabs.get(0));
 	}
 	
-	public indexPage testDragFunction() throws InterruptedException{
-		
-		clickdraggable();
+	/*  AWTException added due to Robot class
+	 * 
+	 */
+	
+	public indexPage testDragFunction() throws InterruptedException, AWTException{
+		loginToPage("test","test");
+		driver.navigate().to("http://way2automation.com/way2auto_jquery/droppable.php");
 //		switching to iframe
 		WebElement iframe1 = driver.findElement(frame1); 
 		driver.switchTo().frame(iframe1);
@@ -100,33 +104,27 @@ public class BasePage {
 		return new indexPage(driver);
 	}
 	
-	public indexPage testSelectFunctionality(){
+	public indexPage testSelectFunctionality() throws InterruptedException, AWTException{
 		
-//		WebElement draggable = driver.findElement(dragableLnk);
-////		get new window
-//		String oldTab = driver.getWindowHandle();
-//		draggable.click();
-//		ArrayList<String> newTab =new ArrayList<String>(driver.getWindowHandles());
-//		newTab.remove(oldTab);
-////		change focus to new tab
-//		driver.switchTo().window(newTab.get(0));
-//		WebElement signIn = driver.findElement(signInLnk);
-//		signIn.click();
 //		loginToPage("test","test");
-//		driver.navigate().refresh();
-		WebElement selectable = driver.findElement(selectableLnk);
-		selectable.click();
+		driver.get("http://way2automation.com/way2auto_jquery/selectable.php");
+//		WebElement selectable = driver.findElement(selectableLnk);
+//		Actions actions = new Actions(driver);
+//		actions.moveToElement(selectable).click().perform();
+//		selectable.click();
+//		if(selectable.isDisplayed())
+//		actions.moveToElement(selectable).click().perform();
+//		else{
+//		By selectableLnk2= By.xpath("//*[@id='wrapper']/div[2]/div[2]/div[1]/ul/li[4]/a");
+//		WebElement selectable2 = driver.findElement(selectableLnk2);
+//		selectable2.click();
+//		}
 		
 		WebElement iframe1 = driver.findElement(frame1);
 		driver.switchTo().frame(iframe1);
 		WebElement item2 = driver.findElement(By.xpath("//*[@id='selectable']/li[2]"));
 		WebElement item4 = driver.findElement(By.xpath("//*[@id='selectable']/li[4]"));
 		WebElement item5 = driver.findElement(By.xpath("//*[@id='selectable']/li[5]"));
-//		WebElement items = driver.findElement(By.id("selectable"));
-//		WebElement item1 = driver.findElement(By.xpath("//*[@id='selectable']/li[1]"));
-//		WebElement item3 = driver.findElement(By.xpath("//*[@id='selectable']/li[3]"));
-//		WebElement item6 = driver.findElement(By.xpath("//*[@id='selectable']/li[6]"));
-//		WebElement item7 = driver.findElement(By.xpath("//*[@id='selectable']/li[7]"));
 		String item2Colorb4 =item2.getCssValue("color");
 		String item4Colorb4 =item4.getCssValue("color");
 		String item5Colorb4 =item5.getCssValue("color");
@@ -148,14 +146,13 @@ public class BasePage {
 		Assert.assertEquals(item2Coloraftr, "rgba(255, 255, 255, 1)");
 		Assert.assertEquals(item4Coloraftr, "rgba(255, 255, 255, 1)");
 		Assert.assertEquals(item5Coloraftr, "rgba(255, 255, 255, 1)");
-		
 		return new indexPage(driver);
 	}
 	
-	public indexPage testSortableFunctionality(){
+	public indexPage testSortableFunctionality() throws InterruptedException, AWTException{
 		
-		WebElement selectable = driver.findElement(sortableLnk);
-		selectable.click();
+//		loginToPage("test","test");
+		driver.get("http://way2automation.com/way2auto_jquery/sortable.php");
 		WebElement iframe1 = driver.findElement(frame1);
 		driver.switchTo().frame(iframe1);
 		WebElement source = driver.findElement(By.xpath("//*[@id='sortable']/li[1]"));
@@ -172,6 +169,81 @@ public class BasePage {
 		dragDrop.perform();
 		Assert.assertEquals(itemTxtBeforeAction1,"Item 5");
 		Assert.assertEquals(itemTxtBeforeAction2,"Item 1");
+		return new indexPage(driver);
+	}
+	
+	public indexPage TestDatePickerFunctionality() throws InterruptedException, AWTException{
+//		loginToPage("test","test");
+		driver.get("http://way2automation.com/way2auto_jquery/datepicker.php");
+//		taking date as 15 aug 2018
+		WebElement iframe1 = driver.findElement(frame1);
+		driver.switchTo().frame(iframe1);
+		driver.findElement(By.xpath("//*[@id='datepicker']")).sendKeys("08/15/2018");
+		
+		return new indexPage(driver);
+	}
+	
+	public indexPage TestAlertFunctionality() throws InterruptedException, AWTException{
+		
+//		loginToPage("test","test");
+		driver.get("http://way2automation.com/way2auto_jquery/alert.php");
+		WebElement iframe1 = driver.findElement(frame1);
+		driver.switchTo().frame(iframe1);
+		driver.findElement(By.xpath("/html/body/button")).click();
+		String AlertMessage = driver.switchTo().alert().getText();
+		System.out.println("The message from popup alert is: " +AlertMessage);
+		System.out.println("Accepting the allert...");
+		driver.switchTo().alert().accept();
+		driver.navigate().refresh();
+//		Handling another example given in another tab for sending some text to alert and print a message.
+		WebElement sideTab = driver.findElement(By.xpath("//*[@id='wrapper']/div/div[1]/div[1]/ul/li[2]/a"));
+		sideTab.click();
+		WebElement iframe2 = driver.findElement(By.xpath("//*[@id='example-1-tab-2']/div/iframe"));
+		driver.switchTo().frame(iframe2);
+		driver.findElement(By.xpath("/html/body/button")).click();
+		Alert a= driver.switchTo().alert();
+		a.sendKeys("Vishal");
+		a.accept();
+		String WelcomeTxt = driver.findElement(By.xpath("//*[@id='demo']")).getText();
+		System.out.println("The Welcome text after the alert is accepted is: "+WelcomeTxt);
+		return new indexPage(driver);
+	}
+	
+	public indexPage SomeRandomCodeSnippetsForPracticeButItIsCommentedNotSureItWillWorkOrNot() throws InterruptedException, AWTException{
+		/*
+		WebElement draggable = driver.findElement(dragableLnk);
+//		get new window
+		String oldTab = driver.getWindowHandle();
+		draggable.click();
+		ArrayList<String> newTab =new ArrayList<String>(driver.getWindowHandles());
+		newTab.remove(oldTab);
+//		change focus to new tab
+		driver.switchTo().window(newTab.get(0));
+		WebElement signIn = driver.findElement(signInLnk);
+		signIn.click();
+//		 Switch back
+	    driver.switchTo().window(windows.iterator().next());
+		Alert alert=driver.switchTo().alert();
+		*/	
+//			WebElement droppable = driver.findElement(droppableLnk);
+		/*
+		***Trying to resolve staleElementRefrenceException ****
+			waitUntil(ExpectedConditions.presenceOfElementLocated(droppableLnk));
+			Wait.until(ExpectedConditions.stalenessOf(droppable));
+			driver.waitUntil(ExpectedConditions.visibilityOf(droppable));
+			driver.manage().timeouts().
+			
+			Wait wait = new FluentWait(driver)
+				    .withTimeout(30, TimeUnit.SECONDS)
+				    .pollingEvery(5, TimeUnit.SECONDS)
+				    .ignoring(NoSuchElementException.class);
+				  WebElement foo = wait.until(isDisplayed());
+			WebDriverWait wait = new WebDriverWait(driver,10000);
+			WebElement droppable=wait.until(ExpectedConditions.visibilityOfElementLocated(droppableLnk));
+		***did not get success to resolve staleElementRefrenceException ****
+		*/
+//			droppable.click();
+		
 		return new indexPage(driver);
 	}
 	
